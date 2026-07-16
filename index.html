@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Priority Ballot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1E3A5F;
+    --ink-soft: #3D5A80;
+    --paper: #FBFAF6;
+    --paper-line: #E4DFD2;
+    --brass: #B8892B;
+    --brass-dark: #8C6A20;
+    --dot-empty: #E4DFD2;
+    --focus: #C9A227;
+    --error: #A5402B;
+    --font-display: 'Source Serif 4', Georgia, serif;
+    --font-body: 'Atkinson Hyperlegible', Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 19px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+
+  header {
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+  }
+
+  .eyebrow {
+    font-size: 15px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brass-dark);
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: 34px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    line-height: 1.2;
+  }
+
+  .instructions {
+    font-size: 18px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .counter-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 0 var(--paper-line);
+  }
+
+  .counter-label {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .counter-number {
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--brass-dark);
+    min-width: 40px;
+    text-align: right;
+  }
+
+  .item {
+    border: 2px solid var(--paper-line);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: #fff;
+  }
+
+  .item.has-votes {
+    border-color: var(--brass);
+  }
+
+  .item-text {
+    flex: 1 1 220px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--dot-empty);
+    border: 2px solid var(--paper-line);
+  }
+
+  .dot.filled {
+    background: var(--brass);
+    border-color: var(--brass-dark);
+  }
+
+  .stepper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .step-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 26px;
+    font-weight: 700;
+    font-family: var(--font-body);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+  }
+
+  .step-btn:active { background: var(--ink); color: #fff; }
+
+  .step-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .step-btn:focus-visible,
+  .submit-btn:focus-visible,
+  .link-btn:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .step-count {
+    min-width: 28px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .submit-row {
+    margin-top: 32px;
+    text-align: center;
+  }
+
+  .submit-btn {
+    font-family: var(--font-body);
+    font-size: 21px;
+    font-weight: 700;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 40px;
+    cursor: pointer;
+  }
+
+  .submit-btn:disabled {
+    background: var(--paper-line);
+    color: #8a8578;
+    cursor: not-allowed;
+  }
+
+  .submit-hint {
+    margin-top: 12px;
+    font-size: 16px;
+    color: var(--ink-soft);
+  }
+
+  .submit-hint.warn { color: var(--error); font-weight: 700; }
+
+  .footer-links {
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  .link-btn {
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    font-family: var(--font-body);
+    font-size: 15px;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .confirm-screen, .results-screen {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .confirm-screen .big-mark {
+    font-family: var(--font-display);
+    font-size: 60px;
+    color: var(--brass);
+    margin-bottom: 8px;
+  }
+
+  .confirm-screen h2, .results-screen h2 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    margin: 0 0 10px;
+  }
+
+  .hidden { display: none !important; }
+
+  .results-list { text-align: left; margin-top: 30px; }
+
+  .result-row { margin-bottom: 18px; }
+
+  .result-label {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-size: 18px;
+  }
+
+  .result-bar-track {
+    background: var(--paper-line);
+    border-radius: 6px;
+    height: 22px;
+    overflow: hidden;
+  }
+
+  .result-bar-fill {
+    background: var(--brass);
+    height: 100%;
+    border-radius: 6px 0 0 6px;
+  }
+
+  .results-total {
+    margin-top: 24px;
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 27px; }
+    .item { padding: 16px; }
+    .item-text { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- VOTING SCREEN -->
+  <div id="voteScreen">
+    <header>
+      <p class="eyebrow">Community Priority Ballot</p>
+      <h1>Where should we focus first?</h1>
+      <p class="instructions">You have <strong>5 votes</strong>. Place them however you like &mdash; all 5 on one item, or spread across several. Use the <strong>+</strong> and <strong>&minus;</strong> buttons next to each item.</p>
+    </header>
+
+    <div class="counter-bar">
+      <span class="counter-label">Votes remaining</span>
+      <span class="counter-number" id="remainingCount">5</span>
+    </div>
+
+    <div id="itemList"></div>
+
+    <div class="submit-row">
+      <button class="submit-btn" id="submitBtn" disabled>Submit my ballot</button>
+      <p class="submit-hint" id="submitHint">Use all 5 votes to submit.</p>
+    </div>
+
+    <div class="footer-links">
+      <button class="link-btn" id="showResultsBtn" type="button">View live results (organizers)</button>
+    </div>
+  </div>
+
+  <!-- CONFIRMATION SCREEN -->
+  <div id="confirmScreen" class="confirm-screen hidden">
+    <div class="big-mark">&#10003;</div>
+    <h2>Thank you &mdash; your ballot was recorded.</h2>
+    <p class="instructions">You can close this window now.</p>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="resultsScreen" class="results-screen hidden">
+    <h2>Live Results</h2>
+    <p class="instructions" id="resultsStatus">Loading results&hellip;</p>
+    <div class="results-list" id="resultsList"></div>
+    <p class="results-total" id="resultsTotal"></p>
+    <div class="footer-links">
+      <button class="link-btn" id="backToVoteBtn" type="button">&larr; Back to ballot</button>
+      <br><br>
+      <button class="link-btn" id="refreshResultsBtn" type="button">Refresh results</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ---------------------------------------------------------------
+  // CONFIGURATION
+  // ---------------------------------------------------------------
+  // 1. Paste the items you're voting on below (must be exactly 10 to match TOTAL_VOTES logic,
+  //    though the code will work with any number of items).
+  const ITEMS = [
+    "Question 1",
+    "Question 2",
+    "Question 3",
+    "Question 4",
+    "Question 5",
+    "Question 6",
+    "Question 7",
+    "Question 8",
+    "Question 9",
+    "Question 10"
+  ];
+
+  const TOTAL_VOTES = 5;
+
+  // 2. Paste your Google Apps Script Web App URL here after deploying it.
+  //    Looks like: https://script.google.com/macros/s/XXXXXXXX/exec
+  const SCRIPT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+
+  // ---------------------------------------------------------------
+  // STATE
+  // ---------------------------------------------------------------
+  const votes = new Array(ITEMS.length).fill(0);
+
+  const itemListEl = document.getElementById('itemList');
+  const remainingCountEl = document.getElementById('remainingCount');
+  const submitBtn = document.getElementById('submitBtn');
+  const submitHint = document.getElementById('submitHint');
+
+  function remaining() {
+    return TOTAL_VOTES - votes.reduce((a, b) => a + b, 0);
+  }
+
+  function renderDots(count) {
+    let html = '';
+    for (let i = 0; i < TOTAL_VOTES; i++) {
+      html += `<span class="dot ${i < count ? 'filled' : ''}"></span>`;
+    }
+    return html;
+  }
+
+  function buildItems() {
+    itemListEl.innerHTML = ITEMS.map((label, idx) => `
+      <div class="item" id="item-${idx}">
+        <span class="item-text">${label}</span>
+        <span class="dots" id="dots-${idx}">${renderDots(votes[idx])}</span>
+        <span class="stepper">
+          <button class="step-btn" type="button" aria-label="Remove a vote from ${label}" data-idx="${idx}" data-dir="-1">&minus;</button>
+          <span class="step-count" id="count-${idx}">${votes[idx]}</span>
+          <button class="step-btn" type="button" aria-label="Add a vote to ${label}" data-idx="${idx}" data-dir="1">+</button>
+        </span>
+      </div>
+    `).join('');
+    attachStepperEvents();
+    refreshUI();
+  }
+
+  function attachStepperEvents() {
+    document.querySelectorAll('.step-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx, 10);
+        const dir = parseInt(btn.dataset.dir, 10);
+        if (dir === 1 && remaining() > 0) {
+          votes[idx]++;
+        } else if (dir === -1 && votes[idx] > 0) {
+          votes[idx]--;
+        }
+        refreshUI();
+      });
+    });
+  }
+
+  function refreshUI() {
+    const left = remaining();
+    remainingCountEl.textContent = left;
+
+    ITEMS.forEach((_, idx) => {
+      document.getElementById('count-' + idx).textContent = votes[idx];
+      document.getElementById('dots-' + idx).innerHTML = renderDots(votes[idx]);
+      document.getElementById('item-' + idx).classList.toggle('has-votes', votes[idx] > 0);
+
+      const minusBtn = document.querySelector(`.step-btn[data-idx="${idx}"][data-dir="-1"]`);
+      const plusBtn = document.querySelector(`.step-btn[data-idx="${idx}"][data-dir="1"]`);
+      minusBtn.disabled = votes[idx] === 0;
+      plusBtn.disabled = left === 0;
+    });
+
+    if (left === 0) {
+      submitBtn.disabled = false;
+      submitHint.textContent = 'All 5 votes placed. Ready to submit.';
+      submitHint.classList.remove('warn');
+    } else {
+      submitBtn.disabled = true;
+      submitHint.textContent = `Use all 5 votes to submit (${left} remaining).`;
+      submitHint.classList.remove('warn');
+    }
+  }
+
+  buildItems();
+
+  // ---------------------------------------------------------------
+  // SUBMIT
+  // ---------------------------------------------------------------
+  submitBtn.addEventListener('click', async () => {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    const payload = new URLSearchParams();
+    ITEMS.forEach((label, idx) => {
+      payload.append('item_' + (idx + 1), label);
+      payload.append('votes_' + (idx + 1), votes[idx]);
+    });
+    payload.append('timestamp', new Date().toISOString());
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: payload.toString()
+      });
+    } catch (err) {
+      // no-cors mode means we can't reliably read success/failure;
+      // we proceed to the thank-you screen regardless.
+      console.error('Submission error', err);
+    }
+
+    document.getElementById('voteScreen').classList.add('hidden');
+    document.getElementById('confirmScreen').classList.remove('hidden');
+  });
+
+  // ---------------------------------------------------------------
+  // RESULTS VIEW
+  // ---------------------------------------------------------------
+  const voteScreen = document.getElementById('voteScreen');
+  const resultsScreen = document.getElementById('resultsScreen');
+  const resultsList = document.getElementById('resultsList');
+  const resultsStatus = document.getElementById('resultsStatus');
+  const resultsTotal = document.getElementById('resultsTotal');
+
+  document.getElementById('showResultsBtn').addEventListener('click', () => {
+    voteScreen.classList.add('hidden');
+    resultsScreen.classList.remove('hidden');
+    loadResults();
+  });
+
+  document.getElementById('backToVoteBtn').addEventListener('click', () => {
+    resultsScreen.classList.add('hidden');
+    voteScreen.classList.remove('hidden');
+  });
+
+  document.getElementById('refreshResultsBtn').addEventListener('click', loadResults);
+
+  async function loadResults() {
+    resultsStatus.textContent = 'Loading results…';
+    resultsList.innerHTML = '';
+    resultsTotal.textContent = '';
+
+    try {
+      const res = await fetch(SCRIPT_URL, { method: 'GET' });
+      const data = await res.json();
+      // Expected shape: { totals: { "Question 1": 12, "Question 2": 4, ... }, respondents: 9 }
+      const totals = data.totals || {};
+      const entries = Object.entries(totals).sort((a, b) => b[1] - a[1]);
+      const max = Math.max(1, ...entries.map(e => e[1]));
+
+      if (entries.length === 0) {
+        resultsStatus.textContent = 'No responses yet.';
+        return;
+      }
+
+      resultsStatus.textContent = '';
+      resultsList.innerHTML = entries.map(([label, count]) => `
+        <div class="result-row">
+          <div class="result-label"><span>${label}</span><span>${count}</span></div>
+          <div class="result-bar-track">
+            <div class="result-bar-fill" style="width:${(count / max) * 100}%"></div>
+          </div>
+        </div>
+      `).join('');
+
+      resultsTotal.textContent = data.respondents != null
+        ? `${data.respondents} ballot${data.respondents === 1 ? '' : 's'} submitted.`
+        : '';
+    } catch (err) {
+      resultsStatus.textContent = 'Could not load results. Check the SCRIPT_URL configuration.';
+      console.error(err);
+    }
+  }
+</script>
+
+</body>
+</html>
